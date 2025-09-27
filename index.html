@@ -7,8 +7,9 @@
 <style>
   body{font-family:sans-serif;padding:16px;max-width:600px;margin:auto;text-align:center;}
   img{max-width:100%;height:auto;margin:16px 0;}
-  button{margin:4px;padding:8px 12px;font-size:16px;}
+  button{margin:4px;padding:8px 12px;font-size:16px;min-width:80px;}
   #result{margin-top:12px;font-weight:bold;}
+  #score{margin-top:12px;font-size:18px;}
 </style>
 </head>
 <body>
@@ -17,6 +18,7 @@
 <p id="questionText"></p>
 <div id="choices"></div>
 <div id="result"></div>
+<div id="score"></div>
 <button id="nextBtn" style="display:none;">次の問題へ</button>
 
 <script>
@@ -35,6 +37,69 @@ const questions = [
     "answer":"りんご"
   }
 ];
+
+let current = 0;
+let score = 0;
+
+function loadQuestion(){
+  if(current >= questions.length){
+    document.getElementById("questionText").textContent = "ゲーム終了！";
+    document.getElementById("questionImage").style.display="none";
+    document.getElementById("choices").innerHTML="";
+    document.getElementById("result").textContent=`あなたのスコア：${score} / ${questions.length}`;
+    document.getElementById("score").textContent="";
+    document.getElementById("nextBtn").style.display="inline-block";
+    document.getElementById("nextBtn").textContent="もう一度遊ぶ";
+    return;
+  }
+  
+  const q = questions[current];
+  document.getElementById("questionText").textContent = q.text;
+  document.getElementById("questionImage").src = q.image;
+  document.getElementById("questionImage").style.display="block";
+  
+  const choicesDiv = document.getElementById("choices");
+  choicesDiv.innerHTML = "";
+  q.choices.forEach(c=>{
+    const btn = document.createElement("button");
+    btn.textContent = c;
+    btn.onclick = ()=>checkAnswer(c);
+    choicesDiv.appendChild(btn);
+  });
+  
+  document.getElementById("result").textContent = "";
+  document.getElementById("score").textContent = `スコア：${score} / ${questions.length}`;
+  document.getElementById("nextBtn").style.display="none";
+}
+
+function checkAnswer(selected){
+  const q = questions[current];
+  const resultDiv = document.getElementById("result");
+  if(selected === q.answer){
+    resultDiv.textContent = "正解！🎉";
+    score++;
+  } else {
+    resultDiv.textContent = `不正解… 正解は「${q.answer}」`;
+  }
+  document.getElementById("score").textContent = `スコア：${score} / ${questions.length}`;
+  document.getElementById("nextBtn").style.display="inline-block";
+}
+
+document.getElementById("nextBtn").onclick = ()=>{
+  if(current >= questions.length){
+    current = 0;
+    score = 0;
+  } else {
+    current++;
+  }
+  loadQuestion();
+}
+
+// 最初の問題表示
+loadQuestion();
+</script>
+</body>
+</html>];
 
 let current = 0;
 
