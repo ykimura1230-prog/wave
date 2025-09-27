@@ -2,69 +2,77 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>お手軽クイズゲーム</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>スキマ時間クイズ</title>
 <style>
-  body{font-family:sans-serif;padding:16px;max-width:600px;margin:auto;text-align:center;}
-  img{max-width:100%;height:auto;margin:16px 0;}
-  button{margin:4px;padding:8px 12px;font-size:16px;min-width:80px;}
-  #result{margin-top:12px;font-weight:bold;}
-  #score{margin-top:12px;font-size:18px;}
+  body { font-family: system-ui, sans-serif; padding: 16px; max-width: 500px; margin: auto; }
+  h1 { text-align: center; }
+  .question { margin: 20px 0; font-size: 18px; }
+  .choices button { display: block; margin: 8px 0; padding: 10px; width: 100%; font-size: 16px; }
+  .result { margin-top: 20px; font-size: 18px; font-weight: bold; }
 </style>
 </head>
 <body>
-<h1>お手軽クイズゲーム</h1>
-<img id="questionImage" src="" alt="問題の画像">
-<p id="questionText"></p>
-<div id="choices"></div>
-<div id="result"></div>
-<div id="score"></div>
-<button id="nextBtn" style="display:none;">次の問題へ</button>
+
+<h1>スキマ時間クイズ</h1>
+<div class="question" id="question"></div>
+<div class="choices" id="choices"></div>
+<div class="result" id="score"></div>
 
 <script>
-// 問題データ（JSON形式）
+// 問題データ
 const questions = [
-  {
-    "text":"この動物は何？",
-    "image":"https://example.com/dog.jpg",
-    "choices":["犬","猫","うさぎ"],
-    "answer":"犬"
-  },
-  {
-    "text":"この果物は何？",
-    "image":"https://example.com/apple.jpg",
-    "choices":["もも","りんご","バナナ"],
-    "answer":"りんご"
-  }
+  { q: "犬は何の仲間？", choices: ["哺乳類", "魚類", "爬虫類"], answer: "哺乳類" },
+  { q: "りんごの色は？", choices: ["赤", "青", "黄色"], answer: "赤" },
+  { q: "うさぎは？", choices: ["哺乳類", "鳥類", "魚類"], answer: "哺乳類" },
+  { q: "ももの色は？", choices: ["ピンク", "緑", "青"], answer: "ピンク" }
 ];
 
-let current = 0;
+// シャッフル関数
+function shuffleArray(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+// ランダム順に並べ替え
+let shuffledQuestions = shuffleArray([...questions]);
+let currentIndex = 0;
 let score = 0;
 
-function loadQuestion(){
-  if(current >= questions.length){
-    document.getElementById("questionText").textContent = "ゲーム終了！";
-    document.getElementById("questionImage").style.display="none";
-    document.getElementById("choices").innerHTML="";
-    document.getElementById("result").textContent=`あなたのスコア：${score} / ${questions.length}`;
-    document.getElementById("score").textContent="";
-    document.getElementById("nextBtn").style.display="inline-block";
-    document.getElementById("nextBtn").textContent="もう一度遊ぶ";
+function loadQuestion() {
+  if (currentIndex >= shuffledQuestions.length) {
+    document.getElementById("question").textContent = "全問終了！";
+    document.getElementById("choices").innerHTML = "";
+    document.getElementById("score").textContent = `スコア: ${score} / ${shuffledQuestions.length}`;
     return;
   }
-  
-  const q = questions[current];
-  document.getElementById("questionText").textContent = q.text;
-  document.getElementById("questionImage").src = q.image;
-  document.getElementById("questionImage").style.display="block";
-  
+
+  const q = shuffledQuestions[currentIndex];
+  document.getElementById("question").textContent = q.q;
+
   const choicesDiv = document.getElementById("choices");
   choicesDiv.innerHTML = "";
-  q.choices.forEach(c=>{
+  
+  // 選択肢もランダム
+  const shuffledChoices = shuffleArray([...q.choices]);
+  shuffledChoices.forEach(choice => {
     const btn = document.createElement("button");
-    btn.textContent = c;
-    btn.onclick = ()=>checkAnswer(c);
+    btn.textContent = choice;
+    btn.onclick = () => checkAnswer(choice, q.answer);
     choicesDiv.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected, correct) {
+  if (selected === correct) score++;
+  currentIndex++;
+  loadQuestion();
+}
+
+// 初回ロード
+loadQuestion();
+</script>
+</body>
+</html>    choicesDiv.appendChild(btn);
   });
   
   document.getElementById("result").textContent = "";
