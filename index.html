@@ -3,38 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>スキマ時間クイズ</title>
+<title>ののちゃんクイズ</title>
 <style>
   body { font-family: system-ui, sans-serif; padding: 16px; max-width: 500px; margin: auto; }
   h1 { text-align: center; }
-  .question { margin: 20px 0; font-size: 18px; }
-  .choices button { display: block; margin: 8px 0; padding: 10px; width: 100%; font-size: 16px; }
-  .result { margin-top: 20px; font-size: 18px; font-weight: bold; }
+  #questionImage { max-width: 100%; margin: 10px 0; }
+  button { display: block; margin: 8px 0; padding: 10px; width: 100%; font-size: 16px; }
+  #result { margin-top: 10px; font-weight: bold; }
 </style>
 </head>
 <body>
-
 <h1>スキマ時間クイズ</h1>
-<div class="question" id="question"></div>
-<div class="choices" id="choices"></div>
-<div class="result" id="score"></div>
+<div id="questionText"></div>
+<img id="questionImage" src="" alt="">
+<div id="choices"></div>
+<div id="result"></div>
+<div id="score"></div>
+<button id="nextBtn">次の問題</button>
 
-<script>
-// 問題データ
-const questions = [
-  { q: "犬は何の仲間？", choices: ["哺乳類", "魚類", "爬虫類"], answer: "哺乳類" },
-  { q: "りんごの色は？", choices: ["赤", "青", "黄色"], answer: "赤" },
-  { q: "うさぎは？", choices: ["哺乳類", "鳥類", "魚類"], answer: "哺乳類" },
-  { q: "ももの色は？", choices: ["ピンク", "緑", "青"], answer: "ピンク" }
-];
-
-// シャッフル関数
-function shuffleArray(arr) {
-  return arr.sort(() => Math.random() - 0.5);
-}
-
-// ランダム順に並べ替え
-let shuffledQuestions = shuffleArray([...questions]);
+<script src="quiz.js"></script>
+</body>
+</html>let shuffledQuestions = shuffleArray([...questions]);
 let currentIndex = 0;
 let score = 0;
 
