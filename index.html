@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お手軽クイズゲーム</title>
+<style>
+  body{font-family:sans-serif;padding:16px;max-width:600px;margin:auto;text-align:center;}
+  img{max-width:100%;height:auto;margin:16px 0;}
+  button{margin:4px;padding:8px 12px;font-size:16px;}
+  #result{margin-top:12px;font-weight:bold;}
+</style>
+</head>
+<body>
+<h1>お手軽クイズゲーム</h1>
+<img id="questionImage" src="" alt="問題の画像">
+<p id="questionText"></p>
+<div id="choices"></div>
+<div id="result"></div>
+<button id="nextBtn" style="display:none;">次の問題へ</button>
+
+<script>
+// 問題データ（JSON形式）
+const questions = [
+  {
+    "text":"この動物は何？",
+    "image":"https://example.com/dog.jpg",
+    "choices":["犬","猫","うさぎ"],
+    "answer":"犬"
+  },
+  {
+    "text":"この果物は何？",
+    "image":"https://example.com/apple.jpg",
+    "choices":["もも","りんご","バナナ"],
+    "answer":"りんご"
+  }
+];
+
+let current = 0;
+
+function loadQuestion(){
+  const q = questions[current];
+  document.getElementById("questionText").textContent = q.text;
+  document.getElementById("questionImage").src = q.image;
+  const choicesDiv = document.getElementById("choices");
+  choicesDiv.innerHTML = "";
+  q.choices.forEach(c=>{
+    const btn = document.createElement("button");
+    btn.textContent = c;
+    btn.onclick = ()=>checkAnswer(c);
+    choicesDiv.appendChild(btn);
+  });
+  document.getElementById("result").textContent = "";
+  document.getElementById("nextBtn").style.display="none";
+}
+
+function checkAnswer(selected){
+  const q = questions[current];
+  const resultDiv = document.getElementById("result");
+  if(selected === q.answer){
+    resultDiv.textContent = "正解！🎉";
+  } else {
+    resultDiv.textContent = `不正解… 正解は「${q.answer}」`;
+  }
+  document.getElementById("nextBtn").style.display="inline-block";
+}
+
+document.getElementById("nextBtn").onclick = ()=>{
+  current = (current+1) % questions.length;
+  loadQuestion();
+}
+
+// 最初の問題表示
+loadQuestion();
+</script>
+</body>
+</html>
